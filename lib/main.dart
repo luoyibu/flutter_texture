@@ -36,62 +36,45 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   MethodChannel _channel = MethodChannel('opengl_texture');
-  List<int> textures = [];
+
+  bool hasLoadTexture = false;
+  int mainTexture = -1;
 
   @override
   void initState() {
     super.initState();
+
+    newTexture();
   }
 
   void newTexture() async {
-    int newTexture = await _channel.invokeMethod('newTexture');
-    textures.add(newTexture);
-    setState(() {});
+    mainTexture = await _channel.invokeMethod('newTexture');
+    setState(() {
+      hasLoadTexture = true;
+    });
+  }
+
+  Widget getTextureBody(BuildContext context) {
+    return Container(
+      // color: Colors.red,
+      // width: 100,
+      // height: 100,
+      child: Texture(textureId: mainTexture,),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+
+    Widget body = hasLoadTexture ? getTextureBody(context) : Text('loading...');
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.separated(
-              itemCount: textures.length,
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider(height: 1, color: Colors.grey,);
-              },
-              itemBuilder: (BuildContext context, int index) {
-                int textureId = textures[index];
-                return Container(
-                  height: 100,
-                  child: Row(
-                    children: <Widget>[
-                      Text(index.toString()),
-                      Container(
-                        width: 80,
-                        height: 80,
-                        // color: Colors.red,
-                        child: Texture(textureId: textureId,),
-                      ),                      
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          Container(
-            height: 100,
-            child: FlatButton(
-              child: Text('add texture'),
-              onPressed: newTexture,
-            ),
-          )
-        ],
-      ),
+      body: Center(child: body,),
     );
   }
 }

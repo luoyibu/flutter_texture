@@ -7,18 +7,20 @@
 //
 
 #import "TexturePlugin.h"
-#import "ImageTexture.h"
+#import "GLRender.h"
+
+@interface TexturePlugin ()
+
+@property (nonatomic, strong) NSObject<FlutterTextureRegistry> *textures;
+@property (nonatomic, strong) GLRender *glRender;
+
+@end
 
 @implementation TexturePlugin
-{
-    NSObject<FlutterTextureRegistry> *_textures;
-    NSMutableDictionary *_cache;
-}
 
 - (instancetype) initWithTextures:(NSObject<FlutterTextureRegistry> *)textures {
     if (self = [super init]) {
         _textures = textures;
-        _cache = [NSMutableDictionary new];
     }
     return self;
 }
@@ -35,13 +37,18 @@
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
 {
     if ([call.method isEqualToString:@"newTexture"]) {
+  
+        __block int64_t textureId = 0;
         
-        UIImage *image = [UIImage imageNamed:@"111.png"];
-        ImageTexture *texture = [ImageTexture textureWithImage:image];
-        int64_t textureID = [_textures registerTexture:texture];
-//        [_textures textureFrameAvailable:textureID];
-        result(@(textureID));
-        _cache[@(textureID)] = texture;
+        __weak typeof(self) wself = self;
+        _glRender = [[GLRender alloc] initWithFrameUpdateCallback:^{
+            [wself.textures textureFrameAvailable:textureId];
+        }];
+        textureId = [_textures registerTexture:_glRender];
+        
+        [_glRender startRender];
+        
+        result(@(textureId));
     }
 }
 

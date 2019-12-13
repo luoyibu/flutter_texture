@@ -10,7 +10,7 @@
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3851952C23A11B120041CC23 /* TexturePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 3851952B23A11B110041CC23 /* TexturePlugin.m */; };
 		38B0389B23A1E91400BB86E3 /* ImageTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B0389A23A1E91400BB86E3 /* ImageTexture.m */; };
-		38B0389D23A1EDAD00BB86E3 /* 111.png in Resources */ = {isa = PBXBuildFile; fileRef = 38B0389C23A1EDAD00BB86E3 /* 111.png */; };
+		38B038A323A2426F00BB86E3 /* GLRender.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B038A223A2426F00BB86E3 /* GLRender.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		3B80C3941E831B6300D905FE /* App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B80C3931E831B6300D905FE /* App.framework */; };
 		3B80C3951E831B6300D905FE /* App.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B80C3931E831B6300D905FE /* App.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -45,7 +45,8 @@
 		3851952B23A11B110041CC23 /* TexturePlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TexturePlugin.m; sourceTree = "<group>"; };
 		38B0389923A1E91400BB86E3 /* ImageTexture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageTexture.h; sourceTree = "<group>"; };
 		38B0389A23A1E91400BB86E3 /* ImageTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageTexture.m; sourceTree = "<group>"; };
-		38B0389C23A1EDAD00BB86E3 /* 111.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 111.png; sourceTree = "<group>"; };
+		38B038A123A2426F00BB86E3 /* GLRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLRender.h; sourceTree = "<group>"; };
+		38B038A223A2426F00BB86E3 /* GLRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GLRender.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		3B80C3931E831B6300D905FE /* App.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = App.framework; path = Flutter/App.framework; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -109,7 +110,6 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
-				38B0389C23A1EDAD00BB86E3 /* 111.png */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -121,6 +121,8 @@
 				3851952B23A11B110041CC23 /* TexturePlugin.m */,
 				38B0389923A1E91400BB86E3 /* ImageTexture.h */,
 				38B0389A23A1E91400BB86E3 /* ImageTexture.m */,
+				38B038A123A2426F00BB86E3 /* GLRender.h */,
+				38B038A223A2426F00BB86E3 /* GLRender.m */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -197,7 +199,6 @@
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				9740EEB41CF90195004384FC /* Debug.xcconfig in Resources */,
-				38B0389D23A1EDAD00BB86E3 /* 111.png in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
@@ -244,6 +245,7 @@
 				3851952C23A11B120041CC23 /* TexturePlugin.m in Sources */,
 				38B0389B23A1E91400BB86E3 /* ImageTexture.m in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				38B038A323A2426F00BB86E3 /* GLRender.m in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
