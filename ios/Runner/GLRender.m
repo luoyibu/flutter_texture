@@ -13,18 +13,6 @@
 #import <CoreVideo/CoreVideo.h>
 #import <UIKit/UIKit.h>
 
-static const char *mm = "#version 330 core";
-
-//layout (location = 0) in vec3 aPos;
-//
-//void main()
-//{
-//    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-//}
-//";
-
-
-
 @implementation GLRender
 {
     FrameUpdateCallback _callback;
@@ -34,12 +22,15 @@ static const char *mm = "#version 330 core";
     CVOpenGLESTextureRef _texture;
     CVPixelBufferRef _target;
     
+    GLuint _program;
+    
     GLuint _frameBuffer;
-    GLuint _depthBuffer;
     
     CADisplayLink *_displayLink;
+
+    int _lastUpdateTs;
+    GLfloat _angle;
     
-    int _frameCount;
 }
 
 - (CVPixelBufferRef)copyPixelBuffer {
@@ -51,9 +42,10 @@ static const char *mm = "#version 330 core";
 {
     if (self = [super init]) {
         _callback = callback;
-        _size = [UIScreen mainScreen].bounds.size;
+        _size = CGSizeMake(1000, 1000);
         
         [self initGL];
+        [self loadShaders];
     }
     return self;
 }
@@ -70,25 +62,7 @@ static const char *mm = "#version 330 core";
     // 将纹理附加到帧缓冲区上
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(_texture), 0);
     
-    
-    // 定点数据
-    float vertices[] = {
-        -0.5f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-    };
-    
-    // vbo
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    
-    // 上传数据到vbo
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    
-    // 创建顶点着色器
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    
+    glViewport(0, 0, _size.width, _size.height);
     
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         NSLog(@"failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
@@ -117,7 +91,6 @@ static const char *mm = "#version 330 core";
 
 - (void)deinitGL {
     glDeleteFramebuffers(1, &_frameBuffer);
-    glDeleteFramebuffers(1, &_depthBuffer);
     CFRelease(_target);
     CFRelease(_textureCache);
     CFRelease(_texture);
@@ -136,14 +109,164 @@ static const char *mm = "#version 330 core";
 {
     [EAGLContext setCurrentContext:_context];
         
-    _frameCount = ++_frameCount%60;
-    
-    glClearColor(1, 0, 0, _frameCount/60.0);
+    NSTimeInterval now = CFAbsoluteTimeGetCurrent();
+    if (now - _lastUpdateTs <= 3) { // 3秒转一个圈
+        _angle = ((now - _lastUpdateTs) / 1.5 - 1) * M_PI;
+    } else {
+        _angle = -M_PI;
+        _lastUpdateTs = now;
+    }
+            
+    glClearColor(0.2, 0.2, 0.2, 1);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(_program);
+    
+    GLuint angleUniformLocation = glGetUniformLocation(_program, "angle");
+    glUniform1f(angleUniformLocation, _angle);
+    
+    [self drawTriangle];
     
     glFlush();
     
     _callback();
+}
+
+- (void)drawTriangle {
+    static GLfloat trangleData[] = {
+        0.0f,   0.5f,   0.0f,
+        -0.5f,  -0.5f,  0.0f,
+        0.5f,   -0.5f,  0.0f,
+    };
+    
+    GLuint positionAttribLocation = glGetAttribLocation(_program, "position");
+    glEnableVertexAttribArray(positionAttribLocation);
+    
+    glVertexAttribPointer(positionAttribLocation, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), trangleData);
+    
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+}
+
+#pragma mark - shader compilation
+- (BOOL)loadShaders
+{
+    GLuint vertShader, fragShader;
+    NSString *vertShaderPathname, *fragShaderPathname;
+    
+    _program = glCreateProgram();
+    
+    vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
+    if (![self compileShader:&vertShader type:GL_VERTEX_SHADER file:vertShaderPathname]) {
+        NSLog(@"failed to compile vertex shader");
+        return NO;
+    }
+    
+    fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
+    if (![self compileShader:&fragShader type:GL_FRAGMENT_SHADER file:fragShaderPathname]) {
+        NSLog(@"failed to compile fragment shader");
+        return NO;
+    }
+    
+    glAttachShader(_program, vertShader);
+    glAttachShader(_program, fragShader);
+    
+    if (![self linkProgram:_program]) {
+        NSLog(@"failed to link program: %d", _program);
+        
+        if (vertShader) {
+            glDeleteShader(vertShader);
+            vertShader = 0;
+        }
+        if (fragShader) {
+            glDeleteShader(fragShader);
+            fragShader = 0;
+        }
+        if (_program) {
+            glDeleteProgram(_program);
+            _program = 0;
+        }
+        return NO;
+    }
+    
+    if (vertShader) {
+       glDetachShader(_program, vertShader);
+       glDeleteShader(vertShader);
+    }
+    if (fragShader) {
+       glDetachShader(_program, fragShader);
+       glDeleteShader(fragShader);
+    }
+    
+    NSLog(@"load shaders succ");
+    return YES;
+}
+
+- (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file
+{
+    GLint status;
+    const GLchar *source;
+    
+    source = (GLchar*)[[NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil] UTF8String];
+    if (!source) {
+        NSLog(@"failed to load shader. type: %i", type);
+        return NO;
+    }
+    
+    *shader = glCreateShader(type);
+    glShaderSource(*shader, 1, &source, NULL);
+    glCompileShader(*shader);
+    
+    #if defined(DEBUG)
+       GLint logLength;
+       glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
+       if (logLength > 0) {
+          GLchar *log = (GLchar *)malloc(logLength);
+          glGetShaderInfoLog(*shader, logLength, &logLength, log);
+          NSLog(@"Shader compile log:\n%s", log);
+          free(log);
+       }
+    #endif
+    
+    glGetShaderiv(*shader, GL_COMPILE_STATUS, &status);
+    if (status == 0) {
+       glDeleteShader(*shader);
+       return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)linkProgram:(GLuint)prog
+{
+    GLint status;
+    glLinkProgram(prog);
+    
+    glGetProgramiv(prog, GL_LINK_STATUS, &status);
+    if (status == 0) {
+       return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)validateProgram:(GLuint)prog
+{
+    GLint logLength, status;
+    glValidateProgram(prog);
+    glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
+    if (logLength > 0) {
+        GLchar *log = (GLchar *)malloc(logLength);
+        glGetProgramInfoLog(prog, logLength, &logLength, log);
+        NSLog(@"program validate log : \n%s", log);
+        free(log);
+    }
+    
+    glGetProgramiv(prog, GL_VALIDATE_STATUS, &status);
+    if (status == 0) {
+        return NO;
+    }
+    
+    return YES;
 }
 
 @end

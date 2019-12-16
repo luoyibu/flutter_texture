@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		384A9B3A23A72B14000EA00D /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 384A9B3923A72B14000EA00D /* Shader.fsh */; };
+		384A9B3C23A72B26000EA00D /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 384A9B3B23A72B26000EA00D /* Shader.vsh */; };
 		3851952C23A11B120041CC23 /* TexturePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 3851952B23A11B110041CC23 /* TexturePlugin.m */; };
-		38B0389B23A1E91400BB86E3 /* ImageTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B0389A23A1E91400BB86E3 /* ImageTexture.m */; };
 		38B038A323A2426F00BB86E3 /* GLRender.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B038A223A2426F00BB86E3 /* GLRender.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		3B80C3941E831B6300D905FE /* App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B80C3931E831B6300D905FE /* App.framework */; };
@@ -41,10 +42,10 @@
 /* Begin PBXFileReference section */
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
+		384A9B3923A72B14000EA00D /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
+		384A9B3B23A72B26000EA00D /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		3851952A23A11B110041CC23 /* TexturePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TexturePlugin.h; sourceTree = "<group>"; };
 		3851952B23A11B110041CC23 /* TexturePlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TexturePlugin.m; sourceTree = "<group>"; };
-		38B0389923A1E91400BB86E3 /* ImageTexture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageTexture.h; sourceTree = "<group>"; };
-		38B0389A23A1E91400BB86E3 /* ImageTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageTexture.m; sourceTree = "<group>"; };
 		38B038A123A2426F00BB86E3 /* GLRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLRender.h; sourceTree = "<group>"; };
 		38B038A223A2426F00BB86E3 /* GLRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GLRender.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
@@ -75,6 +76,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		384A9B3823A72AF3000EA00D /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				384A9B3923A72B14000EA00D /* Shader.fsh */,
+				384A9B3B23A72B26000EA00D /* Shader.vsh */,
+			);
+			name = Shaders;
+			sourceTree = "<group>";
+		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
@@ -119,10 +129,9 @@
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				3851952A23A11B110041CC23 /* TexturePlugin.h */,
 				3851952B23A11B110041CC23 /* TexturePlugin.m */,
-				38B0389923A1E91400BB86E3 /* ImageTexture.h */,
-				38B0389A23A1E91400BB86E3 /* ImageTexture.m */,
 				38B038A123A2426F00BB86E3 /* GLRender.h */,
 				38B038A223A2426F00BB86E3 /* GLRender.m */,
+				384A9B3823A72AF3000EA00D /* Shaders */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -196,6 +205,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				384A9B3A23A72B14000EA00D /* Shader.fsh in Resources */,
+				384A9B3C23A72B26000EA00D /* Shader.vsh in Resources */,
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				9740EEB41CF90195004384FC /* Debug.xcconfig in Resources */,
@@ -243,7 +254,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3851952C23A11B120041CC23 /* TexturePlugin.m in Sources */,
-				38B0389B23A1E91400BB86E3 /* ImageTexture.m in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				38B038A323A2426F00BB86E3 /* GLRender.m in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,

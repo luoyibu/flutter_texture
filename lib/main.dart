@@ -59,8 +59,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget getTextureBody(BuildContext context) {
     return Container(
       // color: Colors.red,
-      // width: 100,
-      // height: 100,
+      width: 300,
+      height: 300,
       child: Texture(textureId: mainTexture,),
     );
   }
